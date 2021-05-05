@@ -1,4 +1,5 @@
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

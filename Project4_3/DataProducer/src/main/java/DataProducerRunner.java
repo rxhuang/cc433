@@ -1,3 +1,8 @@
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+
+
 public class DataProducerRunner {
 
     public static void main(String[] args) throws Exception {
