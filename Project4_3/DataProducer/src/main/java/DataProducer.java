@@ -34,7 +34,7 @@ public class DataProducer {
         
         JSONObject lineJson = new JSONObject(strCurrentLine);
         if(lineJson.getString("type").equals("DRIVER_LOCATION")){
-            this.producer.send("driver-locations", strCurrentLine);
+            this.producer.send(new ProducerRecord<String, String>("driver-locations", strCurrentLine));
         }
         else if(lineJson.getString("type").equals("LEAVING_BLOCK")
         ||lineJson.getString("type").equals("ENTERING_BLOCK")
