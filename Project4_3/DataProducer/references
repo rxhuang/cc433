@@ -2,10 +2,39 @@
   "referenceGuide":"Cite all the reference sources in the required format. Proper citations will help you avoid unnecessary trouble but does not make it acceptable to copy code. Read the course and university policy statements in this regard. When working with others, limit the discussion to block diagrams and arrows. Do not look at another students' code. Read the JSON semantics and make use of JSON validator from the Internet if needed.",
   "websites":[
     {
-      "title":"<title of the page>",
-      "url":"<url>",
-      "code":"<explain in which part of your code did you use the snippet or idea>",
-      "description":"<additional information you may find necessary to provide>"
+      "title":"Java BufferedReader: How to Read File in Java with Example",
+      "url":"https://www.guru99.com/buffered-reader-in-java.html",
+      "code":"        BufferedReader reader = new BufferedReader(new FileReader(this.traceFileName));
+
+        String strCurrentLine;
+        while ((strCurrentLine = objReader.readLine()) != null) {
+            System.out.println(strCurrentLine);
+        }",
+      "description":"how to read the text files in Java"
+    },
+    {
+      "title":"How to parse JSON in Java",
+      "url":"https://stackoverflow.com/questions/2591098/how-to-parse-json-in-java",
+      "code":"String jsonString = ... ; //assign your JSON String here
+JSONObject obj = new JSONObject(jsonString);
+String pageName = obj.getJSONObject("pageInfo").getString("pageName");",
+      "description":"how to parse Json in Java"
+    },
+    {
+      "title":"Class KafkaProducer<K,V>",
+      "url":"https://kafka.apache.org/0101/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html",
+      "code":"Properties props = new Properties();
+              props.put("bootstrap.servers", "localhost:9092");
+              props.put("acks", "all");
+              props.put("retries", 0);
+              props.put("batch.size", 16384);
+              props.put("linger.ms", 1);
+              props.put("buffer.memory", 33554432);
+              props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+              props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+              Producer<String, String> producer = new KafkaProducer<>(props);",
+      "description":"how to create producer object"
     }
   ],
   "collaborators":[
