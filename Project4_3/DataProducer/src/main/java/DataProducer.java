@@ -2,7 +2,7 @@ import org.apache.kafka.clients.producer.Producer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 public class DataProducer {
     private Producer<String, String> producer;
