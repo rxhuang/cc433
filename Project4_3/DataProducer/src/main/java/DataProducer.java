@@ -36,13 +36,13 @@ public class DataProducer {
             String blockID = Integer.toString(lineJson.getInt("blockId"));
 
             if(lineJson.getString("type").equals("DRIVER_LOCATION")){
-                this.producer.send(new ProducerRecord<String, String>("driver-locations", blockID, strCurrentLine));
+                this.producer.send(new ProducerRecord<String, String>("driver-locations", blockID, null, strCurrentLine));
             }
             else if(lineJson.getString("type").equals("LEAVING_BLOCK")
             ||lineJson.getString("type").equals("ENTERING_BLOCK")
             ||lineJson.getString("type").equals("RIDE_REQUEST")
             ||lineJson.getString("type").equals("RIDE_COMPLETE")){
-                this.producer.send(new ProducerRecord<String, String>("events", blockID, strCurrentLine));
+                this.producer.send(new ProducerRecord<String, String>("events", blockID, null, strCurrentLine));
             }
         }
 
