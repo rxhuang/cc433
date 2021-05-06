@@ -29,7 +29,7 @@ public class DataProducer {
 
         String strCurrentLine;
         while ((strCurrentLine = reader.readLine()) != null) {
-            //System.out.println(strCurrentLine);
+            System.out.println(strCurrentLine);
         
         
             JSONObject lineJson = new JSONObject(strCurrentLine);
