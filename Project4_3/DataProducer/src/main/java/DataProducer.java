@@ -3,6 +3,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import org.json.JSONObject;
 
 public class DataProducer {
@@ -24,7 +25,7 @@ public class DataProducer {
         be sent to your samza cluster. Make sure you can consume the topics on the
         master node of your samza cluster before you make a submission.
     */
-    public void sendData() {
+    public void sendData() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(this.traceFileName));
 
         String strCurrentLine;
