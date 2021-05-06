@@ -33,21 +33,20 @@ public class DataProducer {
         
         
             JSONObject lineJson = new JSONObject(strCurrentLine);
-            int blockID = lineJson.getInt("blockId")%5;
+            int blockID = lineJson.getInt("blockId") % 5;
 
-            if(lineJson.getString("type").equals("DRIVER_LOCATION")){
+            if (lineJson.getString("type").equals("DRIVER_LOCATION")) {
                 this.producer.send(new ProducerRecord<String, String>("driver-locations", blockID, null, strCurrentLine));
-            }
-            else if(lineJson.getString("type").equals("LEAVING_BLOCK")
-            ||lineJson.getString("type").equals("ENTERING_BLOCK")
-            ||lineJson.getString("type").equals("RIDE_REQUEST")
-            ||lineJson.getString("type").equals("RIDE_COMPLETE")){
+            } else if (lineJson.getString("type").equals("LEAVING_BLOCK")
+            || lineJson.getString("type").equals("ENTERING_BLOCK")
+            || lineJson.getString("type").equals("RIDE_REQUEST")
+            || lineJson.getString("type").equals("RIDE_COMPLETE")) {
                 this.producer.send(new ProducerRecord<String, String>("events", blockID, null, strCurrentLine));
             }
         }
 
         reader.close();
-    	this.producer.close();
+        this.producer.close();
     }
 
 }
