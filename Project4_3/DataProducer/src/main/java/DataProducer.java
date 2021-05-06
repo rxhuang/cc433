@@ -33,7 +33,7 @@ public class DataProducer {
         
         
             JSONObject lineJson = new JSONObject(strCurrentLine);
-            int blockID = lineJson.getInt("blockId");
+            int blockID = lineJson.getInt("blockId")%5;
 
             if(lineJson.getString("type").equals("DRIVER_LOCATION")){
                 this.producer.send(new ProducerRecord<String, String>("driver-locations", blockID, null, strCurrentLine));
