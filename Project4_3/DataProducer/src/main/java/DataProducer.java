@@ -3,7 +3,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import org.json.JSONObject;
 
 public class DataProducer {
@@ -31,17 +30,18 @@ public class DataProducer {
         String strCurrentLine;
         while ((strCurrentLine = reader.readLine()) != null) {
             System.out.println(strCurrentLine);
-        }
         
-        JSONObject lineJson = new JSONObject(strCurrentLine);
-        if(lineJson.getString("type").equals("DRIVER_LOCATION")){
-            this.producer.send(new ProducerRecord<String, String>("driver-locations", strCurrentLine));
-        }
-        else if(lineJson.getString("type").equals("LEAVING_BLOCK")
-        ||lineJson.getString("type").equals("ENTERING_BLOCK")
-        ||lineJson.getString("type").equals("RIDE_REQUEST")
-        ||lineJson.getString("type").equals("RIDE_COMPLETE")){
-            this.producer.send(new ProducerRecord<String, String>("events", strCurrentLine));
+        
+            JSONObject lineJson = new JSONObject(strCurrentLine);
+            if(lineJson.getString("type").equals("DRIVER_LOCATION")){
+                this.producer.send(new ProducerRecord<String, String>("driver-locations", strCurrentLine));
+            }
+            else if(lineJson.getString("type").equals("LEAVING_BLOCK")
+            ||lineJson.getString("type").equals("ENTERING_BLOCK")
+            ||lineJson.getString("type").equals("RIDE_REQUEST")
+            ||lineJson.getString("type").equals("RIDE_COMPLETE")){
+                this.producer.send(new ProducerRecord<String, String>("events", strCurrentLine));
+            }
         }
 
         reader.close();
