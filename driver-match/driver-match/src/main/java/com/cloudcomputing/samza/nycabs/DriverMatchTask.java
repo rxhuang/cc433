@@ -136,10 +136,10 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 KeyValueIterator<String, String> entries = driverloc.range(blockId + ",0", blockId + ",:");
                 double maxScore = 0.0;
                 int maxDriverId = 0;
-                boolean hasDriver = False;
+                boolean hasDriver = false;
 
                 while(entries.hasNext()){
-                    hasDriver = True;
+                    hasDriver = true;
                     Entry<String, String> entry = entries.next();
                     int driverId = Integer.valueOf(entry.getKey().split(",")[1]);
                     JSONObject driver = new JSONObject(entry.getValue());
