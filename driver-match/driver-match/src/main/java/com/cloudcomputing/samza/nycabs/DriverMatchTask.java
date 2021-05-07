@@ -143,7 +143,13 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                         Entry<String, String> entry = entries.next();
                         int driverId = Integer.valueOf(entry.getKey().split(",")[1]);
                         JSONObject driver = new JSONObject(entry.getValue());
-                        String status = driver.getString("status");
+                        if (driver.has("status")) {
+                            String status = driver.getString("status");
+                        } else {
+                            String status = "UNAVAILABLE"
+                        }
+
+
                         if (status.equals("UNAVAILABLE")) {
                             continue;
                         }
