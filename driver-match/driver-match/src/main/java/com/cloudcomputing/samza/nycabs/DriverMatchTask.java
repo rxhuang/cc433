@@ -24,6 +24,8 @@ public class DriverMatchTask implements StreamTask, InitableTask {
        READ Samza API part in Primer to understand how to start
     */
     private double MAX_MONEY = 100.0;
+    private KeyValueStore<String, String> driverloc;
+
 
     @Override
     @SuppressWarnings("unchecked")
