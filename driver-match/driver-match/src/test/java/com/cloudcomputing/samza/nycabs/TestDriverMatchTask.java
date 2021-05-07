@@ -54,6 +54,7 @@ public class TestDriverMatchTask {
                 && salaryTest.get("driverId").toString().equals("8000"));
 
         Map<String, Object> ratingTest = (Map<String, Object>) resultIter.next();
+        System.out.println(ratingTest.get("clientId").toString()+ratingTest.get("driverId").toString().equals("7001"));
         Assert.assertTrue(ratingTest.get("clientId").toString().equals("5")
                 && ratingTest.get("driverId").toString().equals("8000"));
         Map<String, Object> distanceTest = (Map<String, Object>) resultIter.next();
