@@ -49,7 +49,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         Map<String, Object> data = (Map<String, Object>) envelope.getMessage();
 
 
-        try{
+        try { 
             if (incomingStream.equals(DriverMatchConfig.DRIVER_LOC_STREAM.getStream())) {
             // Handle Driver Location messages
                 int blockId = (int)data.get("blockId");
@@ -104,8 +104,8 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                     int salary = (int)data.get("salary");
                     salary = salary > MAX_MONEY ? MAX_MONEY : salary;
                     String status = "AVAILABLE";
-                    double user_rating = (double)data.get("user_rating");
-                    rating = (rating + user_rating) / 2;
+                    double userRating = (double)data.get("user_rating");
+                    rating = (rating + userRating) / 2;
 
                     String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
                     //check if key exists
@@ -132,14 +132,14 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                     int clientId = (int)data.get("clientId");
                     double latitude = (double)data.get("latitude");
                     double longitude = (double)data.get("longitude");
-                    String gender_preference = data.get("gender_preference").toString();
+                    String genderPreference = data.get("gender_preference").toString();
 
                     KeyValueIterator<String, String> entries = driverloc.range(blockId + ",0", blockId + ",:");
                     double maxScore = 0.0;
                     int maxDriverId = 0;
                     boolean hasDriver = false;
 
-                    while(entries.hasNext()){
+                    while (entries.hasNext()) {
                         Entry<String, String> entry = entries.next();
                         int driverId = Integer.valueOf(entry.getKey().split(",")[1]);
                         JSONObject driver = new JSONObject(entry.getValue());
@@ -156,8 +156,8 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                         }
                         hasDriver = true;
 
-                        double score = score(latitude, longitude, gender_preference, driver);
-                        if (score > maxScore){
+                        double score = score(latitude, longitude, genderPreference, driver);
+                        if (score > maxScore) {
                             maxScore = score;
                             maxDriverId = driverId;
                         }
@@ -181,12 +181,12 @@ public class DriverMatchTask implements StreamTask, InitableTask {
             } else {
                 throw new IllegalStateException("Unexpected input stream: " + envelope.getSystemStreamPartition());
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Something went wrong.");
         }
     }
 
-    private double score(double latitude, double longitude, String gender_preference, JSONObject driver){
+    private double score(double latitude, double longitude, String genderPreference, JSONObject driver) {
         double latitude2 = driver.getDouble("latitude");
         double longitude2 = driver.getDouble("longitude");
         String gender = driver.getString("gender");
@@ -194,11 +194,11 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         int salary = driver.getInt("salary");
         salary = salary > MAX_MONEY ? MAX_MONEY : salary;
 
-        double d = Math.exp(-1*Math.sqrt((latitude2 - latitude) * (latitude2 - latitude) 
+        double d = Math.exp(-1 * Math.sqrt((latitude2 - latitude) * (latitude2 - latitude) 
             + (longitude2 - longitude) * (longitude2 - longitude)));
-        double r = rating/5;
-        double s = 1 - salary/100.0;
-        double g = gender_preference.equals(gender) || gender_preference.equals("N") ? 1.0 : 0.0;
+        double r = rating / 5;
+        double s = 1 - salary / 100.0;
+        double g = genderPreference.equals(gender) || genderPreference.equals("N") ? 1.0 : 0.0;
 
         return d * 0.4 + g * 0.1 + r * 0.3 + s * 0.2;
     }
