@@ -139,14 +139,15 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 boolean hasDriver = false;
 
                 while(entries.hasNext()){
-                    hasDriver = true;
                     Entry<String, String> entry = entries.next();
                     int driverId = Integer.valueOf(entry.getKey().split(",")[1]);
                     JSONObject driver = new JSONObject(entry.getValue());
+                    String status = driver.getString("status");
+                    if (status.equals("UNAVAILABLE")) {
+                        continue;
+                    }
+                    hasDriver = true;
 
-                    System.out.println("new score________________________________________");
-                    System.out.println(clientId);
-                    System.out.println(driverId);
                     double score = score(latitude, longitude, gender_preference, driver);
                     if (score > maxScore){
                         maxScore = score;
@@ -157,6 +158,11 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 entries.close();
 
                 if (hasDriver) {
+                    String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
+                    JSONObject driver = new JSONObject(driverloc.get(key));
+                    driver.put("status", "UNAVAILABLE");
+                    driverloc.put(key, driver.toString()); 
+
                     Map<String, Object> message = new HashMap<String, Object>();
                     message.put("clientId", clientId);
                     message.put("driverId", maxDriverId);
@@ -176,20 +182,13 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         double rating = driver.getDouble("rating");
         int salary = driver.getInt("salary");
         salary = salary > MAX_MONEY ? MAX_MONEY : salary;
-        String status = driver.getString("status");
 
-        
         double d = Math.exp(-1*Math.sqrt((latitude2 - latitude) * (latitude2 - latitude) 
             + (longitude2 - longitude) * (longitude2 - longitude)));
         double r = rating/5;
         double s = 1 - salary/100.0;
         double g = gender_preference.equals(gender) || gender_preference.equals("N") ? 1.0 : 0.0;
 
-        System.out.println(d);
-        System.out.println(g);
-        System.out.println(r);
-        System.out.println(s);
-        System.out.println(d * 0.4 + g * 0.1 + r * 0.3 + s * 0.2);
         return d * 0.4 + g * 0.1 + r * 0.3 + s * 0.2;
     }
 }
