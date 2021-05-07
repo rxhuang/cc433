@@ -16,11 +16,11 @@ import org.apache.samza.task.StreamTaskFactory;
 public class DriverMatchTaskApplication implements TaskApplication {
     // Consider modify this zookeeper address, localhost may not be a good choice.
     // If this task application is executing in slave machine.
-    private static final List<String> KAFKA_CONSUMER_ZK_CONNECT = ImmutableList.of("172.31.42.137:2181");
+    private static final List<String> KAFKA_CONSUMER_ZK_CONNECT = ImmutableList.of("172.31.32.198:2181");
 
     // Consider modify the bootstrap servers address. This example only cover one
     // address.
-    private static final List<String> KAFKA_PRODUCER_BOOTSTRAP_SERVERS = ImmutableList.of("172.31.33.102:9092,172.31.35.120:9092,172.31.42.137:9092");
+    private static final List<String> KAFKA_PRODUCER_BOOTSTRAP_SERVERS = ImmutableList.of("172.31.34.131:9092,172.31.46.134:9092,172.31.32.198:9092");
     private static final Map<String, String> KAFKA_DEFAULT_STREAM_CONFIGS = ImmutableMap.of("replication.factor", "1");
 
     @Override
