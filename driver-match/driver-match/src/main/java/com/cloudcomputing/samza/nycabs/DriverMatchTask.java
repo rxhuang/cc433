@@ -146,7 +146,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                         if (driver.has("status")) {
                             String status = driver.getString("status");
                         } else {
-                            String status = "UNAVAILABLE"
+                            String status = "UNAVAILABLE";
                         }
 
 
