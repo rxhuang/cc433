@@ -49,36 +49,13 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         Map<String, Object> data = (Map<String, Object>) envelope.getMessage();
 
 
-        if (incomingStream.equals(DriverMatchConfig.DRIVER_LOC_STREAM.getStream())) {
-        // Handle Driver Location messages
-            int blockId = (int)data.get("blockId");
-            int driverId = (int)data.get("driverId");
-            double latitude = (double)data.get("latitude");
-            double longitude = (double)data.get("longitude");
-
-            String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
-            //check if key exists
-            JSONObject driver = driverloc.get(key) != null ? 
-                new JSONObject(driverloc.get(key)) : new JSONObject();
-
-            driver.put("latitude", latitude);
-            driver.put("longitude", longitude);
-            driverloc.put(key, driver.toString());            
-
-        } else if (incomingStream.equals(DriverMatchConfig.EVENT_STREAM.getStream())) {
-        // Handle Event messages
-            String type = (String)data.get("type");
-
-            if (type.equals("ENTERING_BLOCK")) {
+        try{
+            if (incomingStream.equals(DriverMatchConfig.DRIVER_LOC_STREAM.getStream())) {
+            // Handle Driver Location messages
                 int blockId = (int)data.get("blockId");
                 int driverId = (int)data.get("driverId");
                 double latitude = (double)data.get("latitude");
                 double longitude = (double)data.get("longitude");
-                String gender = data.get("gender").toString();
-                double rating = (double)data.get("rating");
-                int salary = (int)data.get("salary");
-                salary = salary > MAX_MONEY ? MAX_MONEY : salary;
-                String status = data.get("status").toString();
 
                 String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
                 //check if key exists
@@ -87,91 +64,118 @@ public class DriverMatchTask implements StreamTask, InitableTask {
 
                 driver.put("latitude", latitude);
                 driver.put("longitude", longitude);
-                driver.put("gender", gender);
-                driver.put("rating", rating);
-                driver.put("salary", salary);
-                driver.put("status", status);
-                driverloc.put(key, driver.toString()); 
+                driverloc.put(key, driver.toString());            
 
-            } else if (type.equals("RIDE_COMPLETE")) {
-                int blockId = (int)data.get("blockId");
-                int driverId = (int)data.get("driverId");
-                double latitude = (double)data.get("latitude");
-                double longitude = (double)data.get("longitude");
-                String gender = data.get("gender").toString();
-                double rating = (double)data.get("rating");
-                int salary = (int)data.get("salary");
-                salary = salary > MAX_MONEY ? MAX_MONEY : salary;
-                String status = "AVAILABLE";
-                double user_rating = (double)data.get("user_rating");
-                rating = (rating + user_rating) / 2;
+            } else if (incomingStream.equals(DriverMatchConfig.EVENT_STREAM.getStream())) {
+            // Handle Event messages
+                String type = (String)data.get("type");
 
-                String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
-                //check if key exists
-                JSONObject driver = driverloc.get(key) != null ? 
-                    new JSONObject(driverloc.get(key)) : new JSONObject();
+                if (type.equals("ENTERING_BLOCK")) {
+                    int blockId = (int)data.get("blockId");
+                    int driverId = (int)data.get("driverId");
+                    double latitude = (double)data.get("latitude");
+                    double longitude = (double)data.get("longitude");
+                    String gender = data.get("gender").toString();
+                    double rating = (double)data.get("rating");
+                    int salary = (int)data.get("salary");
+                    salary = salary > MAX_MONEY ? MAX_MONEY : salary;
+                    String status = data.get("status").toString();
 
-                driver.put("latitude", latitude);
-                driver.put("longitude", longitude);
-                driver.put("gender", gender);
-                driver.put("rating", rating);
-                driver.put("salary", salary);
-                driver.put("status", status);
-                driverloc.put(key, driver.toString()); 
+                    String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
+                    //check if key exists
+                    JSONObject driver = driverloc.get(key) != null ? 
+                        new JSONObject(driverloc.get(key)) : new JSONObject();
 
-            } else if (type.equals("LEAVING_BLOCK")) {
-                int blockId = (int)data.get("blockId");
-                int driverId = (int)data.get("driverId");
-
-                String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
-                driverloc.delete(key);
-
-            } else {
-                int blockId = (int)data.get("blockId");
-                int clientId = (int)data.get("clientId");
-                double latitude = (double)data.get("latitude");
-                double longitude = (double)data.get("longitude");
-                String gender_preference = data.get("gender_preference").toString();
-
-                KeyValueIterator<String, String> entries = driverloc.range(blockId + ",0", blockId + ",:");
-                double maxScore = 0.0;
-                int maxDriverId = 0;
-                boolean hasDriver = false;
-
-                while(entries.hasNext()){
-                    Entry<String, String> entry = entries.next();
-                    int driverId = Integer.valueOf(entry.getKey().split(",")[1]);
-                    JSONObject driver = new JSONObject(entry.getValue());
-                    String status = driver.getString("status");
-                    if (status.equals("UNAVAILABLE")) {
-                        continue;
-                    }
-                    hasDriver = true;
-
-                    double score = score(latitude, longitude, gender_preference, driver);
-                    if (score > maxScore){
-                        maxScore = score;
-                        maxDriverId = driverId;
-                    }
-                }
-
-                entries.close();
-
-                if (hasDriver) {
-                    String key = Integer.toString(blockId) + ',' + Integer.toString(maxDriverId);
-                    JSONObject driver = new JSONObject(driverloc.get(key));
-                    driver.put("status", "UNAVAILABLE");
+                    driver.put("latitude", latitude);
+                    driver.put("longitude", longitude);
+                    driver.put("gender", gender);
+                    driver.put("rating", rating);
+                    driver.put("salary", salary);
+                    driver.put("status", status);
                     driverloc.put(key, driver.toString()); 
 
-                    Map<String, Object> message = new HashMap<String, Object>();
-                    message.put("clientId", clientId);
-                    message.put("driverId", maxDriverId);
-                    collector.send(new OutgoingMessageEnvelope(DriverMatchConfig.MATCH_STREAM, message));
-                }
-            }
+                } else if (type.equals("RIDE_COMPLETE")) {
+                    int blockId = (int)data.get("blockId");
+                    int driverId = (int)data.get("driverId");
+                    double latitude = (double)data.get("latitude");
+                    double longitude = (double)data.get("longitude");
+                    String gender = data.get("gender").toString();
+                    double rating = (double)data.get("rating");
+                    int salary = (int)data.get("salary");
+                    salary = salary > MAX_MONEY ? MAX_MONEY : salary;
+                    String status = "AVAILABLE";
+                    double user_rating = (double)data.get("user_rating");
+                    rating = (rating + user_rating) / 2;
 
-        } else {
-            throw new IllegalStateException("Unexpected input stream: " + envelope.getSystemStreamPartition());
+                    String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
+                    //check if key exists
+                    JSONObject driver = driverloc.get(key) != null ? 
+                        new JSONObject(driverloc.get(key)) : new JSONObject();
+
+                    driver.put("latitude", latitude);
+                    driver.put("longitude", longitude);
+                    driver.put("gender", gender);
+                    driver.put("rating", rating);
+                    driver.put("salary", salary);
+                    driver.put("status", status);
+                    driverloc.put(key, driver.toString()); 
+
+                } else if (type.equals("LEAVING_BLOCK")) {
+                    int blockId = (int)data.get("blockId");
+                    int driverId = (int)data.get("driverId");
+
+                    String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
+                    driverloc.delete(key);
+
+                } else {
+                    int blockId = (int)data.get("blockId");
+                    int clientId = (int)data.get("clientId");
+                    double latitude = (double)data.get("latitude");
+                    double longitude = (double)data.get("longitude");
+                    String gender_preference = data.get("gender_preference").toString();
+
+                    KeyValueIterator<String, String> entries = driverloc.range(blockId + ",0", blockId + ",:");
+                    double maxScore = 0.0;
+                    int maxDriverId = 0;
+                    boolean hasDriver = false;
+
+                    while(entries.hasNext()){
+                        Entry<String, String> entry = entries.next();
+                        int driverId = Integer.valueOf(entry.getKey().split(",")[1]);
+                        JSONObject driver = new JSONObject(entry.getValue());
+                        String status = driver.getString("status");
+                        if (status.equals("UNAVAILABLE")) {
+                            continue;
+                        }
+                        hasDriver = true;
+
+                        double score = score(latitude, longitude, gender_preference, driver);
+                        if (score > maxScore){
+                            maxScore = score;
+                            maxDriverId = driverId;
+                        }
+                    }
+
+                    entries.close();
+
+                    if (hasDriver) {
+                        String key = Integer.toString(blockId) + ',' + Integer.toString(maxDriverId);
+                        JSONObject driver = new JSONObject(driverloc.get(key));
+                        driver.put("status", "UNAVAILABLE");
+                        driverloc.put(key, driver.toString()); 
+
+                        Map<String, Object> message = new HashMap<String, Object>();
+                        message.put("clientId", clientId);
+                        message.put("driverId", maxDriverId);
+                        collector.send(new OutgoingMessageEnvelope(DriverMatchConfig.MATCH_STREAM, message));
+                    }
+                }
+
+            } else {
+                throw new IllegalStateException("Unexpected input stream: " + envelope.getSystemStreamPartition());
+            }
+        } catch(Exception e) {
+            System.out.println("Something went wrong.");
         }
     }
 
