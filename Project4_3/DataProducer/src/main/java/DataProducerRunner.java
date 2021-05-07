@@ -16,7 +16,7 @@ public class DataProducerRunner {
         */
         
         Properties props = new Properties();
-        props.put("bootstrap.servers", "172.31.42.137:9092,172.31.33.102:9092,172.31.33.41:9092");
+        props.put("bootstrap.servers", "172.31.34.131:9092,172.31.46.134:9092,172.31.32.198:9092");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
