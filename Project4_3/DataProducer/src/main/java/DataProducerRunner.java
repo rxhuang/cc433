@@ -27,7 +27,7 @@ public class DataProducerRunner {
        
         Producer<String, String> producer = new KafkaProducer<>(props);
 
-        String traceFileName = "tracefile";
+        String traceFileName = "trace_task2";
         DataProducer dp = new DataProducer(producer, traceFileName);
         dp.sendData();
     }
