@@ -98,7 +98,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 int salary = (int)data.get("salary");
                 String status = "AVAILABLE";
                 double user_rating = (double)data.get("user_rating");
-                rating = (rating+user_rating)/2
+                rating = (rating + user_rating) / 2;
 
                 String key = blockId + ',' + driverId;
                 //check if key exists
@@ -139,7 +139,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                     double score = score(latitude, longitude, gender_preference, driver);
                     if (score > maxScore){
                         maxScore = score;
-                        maxDriverId = driverId
+                        maxDriverId = driverId;
                     }
                 }
 
