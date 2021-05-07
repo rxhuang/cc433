@@ -33,7 +33,9 @@ public class DataProducerTest {
 
         List<ProducerRecord<String, String>> expected = Arrays.asList(
                 new ProducerRecord<>("events", 3, null, "{\"blockId\":5648,\"type\":\"ENTERING_BLOCK\"}"),
-                new ProducerRecord<>("driver-locations", 4, null, "{\"blockId\":5649,\"type\":\"DRIVER_LOCATION\"}"));
+                new ProducerRecord<>("driver-locations", 4, null, "{\"blockId\":5649,\"type\":\"DRIVER_LOCATION\"}"),
+                new ProducerRecord<>("driver-locations", 4, null, "{\"blockId\":5649,\"type\":\"DRIVER_LOCATION\"}"),
+                new ProducerRecord<>("driver-locations", 3, null, "{\"blockId\":5648,\"type\":\"DRIVER_LOCATION\"}"));
 
         Assert.assertEquals("Producer records not matched!", expected, history);
     }
