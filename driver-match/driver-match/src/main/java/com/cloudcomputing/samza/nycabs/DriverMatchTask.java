@@ -153,7 +153,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
 
                 entries.close();
 
-                if (1==1) {
+                if (hasDriver) {
                     Map<String, Object> message = new HashMap<String, Object>();
                     message.put("clientId", clientId);
                     message.put("driverId", maxDriverId);
