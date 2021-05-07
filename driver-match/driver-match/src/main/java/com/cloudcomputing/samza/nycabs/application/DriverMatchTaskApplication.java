@@ -16,11 +16,11 @@ import org.apache.samza.task.StreamTaskFactory;
 public class DriverMatchTaskApplication implements TaskApplication {
     // Consider modify this zookeeper address, localhost may not be a good choice.
     // If this task application is executing in slave machine.
-    private static final List<String> KAFKA_CONSUMER_ZK_CONNECT = ImmutableList.of("localhost:2181");
+    private static final List<String> KAFKA_CONSUMER_ZK_CONNECT = ImmutableList.of("172.31.42.137:2181");
 
     // Consider modify the bootstrap servers address. This example only cover one
     // address.
-    private static final List<String> KAFKA_PRODUCER_BOOTSTRAP_SERVERS = ImmutableList.of("localhost:9092");
+    private static final List<String> KAFKA_PRODUCER_BOOTSTRAP_SERVERS = ImmutableList.of("172.31.33.102:9092,172.31.35.120:9092,172.31.42.137:9092");
     private static final Map<String, String> KAFKA_DEFAULT_STREAM_CONFIGS = ImmutableMap.of("replication.factor", "1");
 
     @Override
@@ -38,9 +38,23 @@ public class DriverMatchTaskApplication implements TaskApplication {
         // Define your input and output descriptor in here.
         // Reference solution:
         // https://github.com/apache/samza-hello-samza/blob/master/src/main/java/samza/examples/wikipedia/task/application/WikipediaStatsTaskApplication.java
+        KafkaInputDescriptor kafkaInputDescriptor1 =
+            kafkaSystemDescriptor.getInputDescriptor("events", new JsonSerde<>());
+        KafkaInputDescriptor kafkaInputDescriptor2 =
+            kafkaSystemDescriptor.getInputDescriptor("driver-locations", new JsonSerde<>());
 
+            
         // Bound you descriptor with your taskApplicationDescriptor in here.
         // Please refer to the same link.
+
+        taskApplicationDescriptor.withDefaultSystem(kafkaSystemDescriptor);
+        taskApplicationDescriptor.withInputStream(kafkaInputDescriptor1);
+        taskApplicationDescriptor.withInputStream(kafkaInputDescriptor2);
+
+        taskApplicationDescriptor.withOutputStream(
+        kafkaSystemDescriptor.getOutputDescriptor("match-stream", new JsonSerde<>()));
+
+
 
         taskApplicationDescriptor.withTaskFactory((StreamTaskFactory)() -> new DriverMatchTask());
     }
