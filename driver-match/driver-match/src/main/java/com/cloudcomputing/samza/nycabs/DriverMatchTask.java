@@ -2,6 +2,8 @@ package com.cloudcomputing.samza.nycabs;
 
 import org.apache.samza.context.Context;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.task.InitableTask;
@@ -31,7 +33,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
     @SuppressWarnings("unchecked")
     public void init(Context context) throws Exception {
         // Initialize (maybe the kv stores?)
-        driverloc = (KeyValueStore<String, String>)context.getStore("driver-loc");
+        driverloc = (KeyValueStore<String, String>)context.getExternalContext("driver-loc");
     }
 
     @Override
@@ -54,7 +56,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
             double latitude = (double)data.get("latitude");
             double longitude = (double)data.get("longitude");
 
-            String key = blockId + ',' + driverId;
+            String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
             //check if key exists
             JSONObject driver = driverloc.get(key) != null ? 
                 new JSONObject(driverloc.get(key)) : new JSONObject();
@@ -75,9 +77,10 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 String gender = data.get("gender").toString();
                 double rating = (double)data.get("rating");
                 int salary = (int)data.get("salary");
+                salary = slaray > MAX_MONEY ? MAX_MONEY : slaray;
                 String status = data.get("status").toString();
 
-                String key = blockId + ',' + driverId;
+                String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
                 //check if key exists
                 JSONObject driver = driverloc.get(key) != null ? 
                     new JSONObject(driverloc.get(key)) : new JSONObject();
@@ -98,11 +101,12 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 String gender = data.get("gender").toString();
                 double rating = (double)data.get("rating");
                 int salary = (int)data.get("salary");
+                salary = slaray > MAX_MONEY ? MAX_MONEY : slaray;
                 String status = "AVAILABLE";
                 double user_rating = (double)data.get("user_rating");
                 rating = (rating + user_rating) / 2;
 
-                String key = blockId + ',' + driverId;
+                String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
                 //check if key exists
                 JSONObject driver = driverloc.get(key) != null ? 
                     new JSONObject(driverloc.get(key)) : new JSONObject();
@@ -119,7 +123,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 int blockId = (int)data.get("blockId");
                 int driverId = (int)data.get("driverId");
 
-                String key = blockId + ',' + driverId;
+                String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
                 driverloc.delete(key);
 
             } else {
@@ -132,8 +136,10 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 KeyValueIterator<String, String> entries = driverloc.range(blockId + ",0", blockId + ",:");
                 double maxScore = 0.0;
                 int maxDriverId = 0;
+                boolean hasDriver = False;
 
                 while(entries.hasNext()){
+                    hasDriver = True;
                     Entry<String, String> entry = entries.next();
                     int driverId = Integer.valueOf(entry.getKey().split(",")[1]);
                     JSONObject driver = new JSONObject(entry.getValue());
@@ -146,10 +152,13 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 }
 
                 entries.close();
-        		Map<String, Object> message = new HashMap<String, Object>();
-        		message.put("clientId", clientId);
-        		message.put("driverId", maxDriverId);
-        		collector.send(new OutgoingMessageEnvelope(DriverMatchConfig.MATCH_STREAM, message));
+
+                if (hasDriver) {
+                    Map<String, Object> message = new HashMap<String, Object>();
+                    message.put("clientId", clientId);
+                    message.put("driverId", maxDriverId);
+                    collector.send(new OutgoingMessageEnvelope(DriverMatchConfig.MATCH_STREAM, message));
+                }
             }
 
         } else {
@@ -163,6 +172,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         String gender = driver.getString("gender");
         double rating = driver.getDouble("rating");
         int salary = driver.getInt("salary");
+        salary = slaray > MAX_MONEY ? MAX_MONEY : slaray;
         String status = driver.getString("status");
 
         double d = Math.exp(-1*Math.sqrt((latitude2 - latitude) * (latitude2 - latitude) 
