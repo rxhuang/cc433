@@ -25,7 +25,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
     /* Define per task state here. (kv stores etc)
        READ Samza API part in Primer to understand how to start
     */
-    private double MAX_MONEY = 100.0;
+    private int MAX_MONEY = 100;
     private KeyValueStore<String, String> driverloc;
 
 
@@ -33,7 +33,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
     @SuppressWarnings("unchecked")
     public void init(Context context) throws Exception {
         // Initialize (maybe the kv stores?)
-        driverloc = (KeyValueStore<String, String>)context.getExternalContext("driver-loc");
+        driverloc = (KeyValueStore<String, String>)context.getTaskContext().getStore("driver-loc");
     }
 
     @Override
