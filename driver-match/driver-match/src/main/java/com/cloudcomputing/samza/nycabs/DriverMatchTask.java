@@ -158,7 +158,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 entries.close();
 
                 if (hasDriver) {
-                    String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
+                    String key = Integer.toString(blockId) + ',' + Integer.toString(maxDriverId);
                     JSONObject driver = new JSONObject(driverloc.get(key));
                     driver.put("status", "UNAVAILABLE");
                     driverloc.put(key, driver.toString()); 
