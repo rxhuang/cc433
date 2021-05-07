@@ -77,7 +77,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 String gender = data.get("gender").toString();
                 double rating = (double)data.get("rating");
                 int salary = (int)data.get("salary");
-                salary = slaray > MAX_MONEY ? MAX_MONEY : slaray;
+                salary = salary > MAX_MONEY ? MAX_MONEY : salary;
                 String status = data.get("status").toString();
 
                 String key = Integer.toString(blockId) + ',' + Integer.toString(driverId);
@@ -101,7 +101,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                 String gender = data.get("gender").toString();
                 double rating = (double)data.get("rating");
                 int salary = (int)data.get("salary");
-                salary = slaray > MAX_MONEY ? MAX_MONEY : slaray;
+                salary = salary > MAX_MONEY ? MAX_MONEY : salary;
                 String status = "AVAILABLE";
                 double user_rating = (double)data.get("user_rating");
                 rating = (rating + user_rating) / 2;
@@ -172,7 +172,7 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         String gender = driver.getString("gender");
         double rating = driver.getDouble("rating");
         int salary = driver.getInt("salary");
-        salary = slaray > MAX_MONEY ? MAX_MONEY : slaray;
+        salary = salary > MAX_MONEY ? MAX_MONEY : salary;
         String status = driver.getString("status");
 
         double d = Math.exp(-1*Math.sqrt((latitude2 - latitude) * (latitude2 - latitude) 
