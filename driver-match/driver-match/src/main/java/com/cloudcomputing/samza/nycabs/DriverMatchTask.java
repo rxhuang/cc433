@@ -144,6 +144,9 @@ public class DriverMatchTask implements StreamTask, InitableTask {
                     int driverId = Integer.valueOf(entry.getKey().split(",")[1]);
                     JSONObject driver = new JSONObject(entry.getValue());
 
+                    System.out.println("new score________________________________________");
+                    System.out.println(clientId);
+                    System.out.println(driverId);
                     double score = score(latitude, longitude, gender_preference, driver);
                     if (score > maxScore){
                         maxScore = score;
@@ -182,7 +185,6 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         double s = 1 - salary/100.0;
         double g = gender_preference.equals(gender) || gender_preference.equals("N") ? 1.0 : 0.0;
 
-        System.out.println(latitude);
         System.out.println(d);
         System.out.println(g);
         System.out.println(r);
