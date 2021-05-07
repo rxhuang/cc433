@@ -175,12 +175,14 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         salary = salary > MAX_MONEY ? MAX_MONEY : salary;
         String status = driver.getString("status");
 
+        
         double d = Math.exp(-1*Math.sqrt((latitude2 - latitude) * (latitude2 - latitude) 
             + (longitude2 - longitude) * (longitude2 - longitude)));
         double r = rating/5;
         double s = 1 - salary/100.0;
         double g = gender_preference.equals(gender) || gender_preference.equals("N") ? 1.0 : 0.0;
 
+        System.out.print(latitude,d,g,r,s,d * 0.4 + g * 0.1 + r * 0.3 + s * 0.2);
         return d * 0.4 + g * 0.1 + r * 0.3 + s * 0.2;
     }
 }
