@@ -182,7 +182,12 @@ public class DriverMatchTask implements StreamTask, InitableTask {
         double s = 1 - salary/100.0;
         double g = gender_preference.equals(gender) || gender_preference.equals("N") ? 1.0 : 0.0;
 
-        System.out.print(latitude,d,g,r,s,d * 0.4 + g * 0.1 + r * 0.3 + s * 0.2);
+        System.out.println(latitude);
+        System.out.println(d);
+        System.out.println(g);
+        System.out.println(r);
+        System.out.println(s);
+        System.out.println(d * 0.4 + g * 0.1 + r * 0.3 + s * 0.2);
         return d * 0.4 + g * 0.1 + r * 0.3 + s * 0.2;
     }
 }
