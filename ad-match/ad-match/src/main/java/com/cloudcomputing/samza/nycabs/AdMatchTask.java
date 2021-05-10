@@ -36,9 +36,9 @@ public class AdMatchTask implements StreamTask, InitableTask {
        READ Samza API part in Writeup to understand how to start
     */
 
-    private KeyValueStore<Integer, Map<String, Object>> userInfo;
+    private KeyValueStore<Integer, String> userInfo;
 
-    private KeyValueStore<String, Map<String, Object>> yelpInfo;
+    private KeyValueStore<String, String> yelpInfo;
 
     private Set<String> lowCalories;
 
