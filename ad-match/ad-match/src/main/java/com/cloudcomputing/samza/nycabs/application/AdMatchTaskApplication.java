@@ -33,6 +33,9 @@ public class AdMatchTaskApplication implements TaskApplication {
 
         // Hint about streams, please refer to AdMatchConfig.java
         // We need one input stream "events", one output stream "ad-stream".
+        KafkaInputDescriptor kafkaInputDescriptor1 =
+        kafkaSystemDescriptor.getInputDescriptor("events", new JsonSerde<>());
+
 
         // Define your input and output descriptor in here.
         // Reference solution:
@@ -40,6 +43,11 @@ public class AdMatchTaskApplication implements TaskApplication {
 
         // Bound you descriptor with your taskApplicationDescriptor in here.
         // Please refer to the same link.
+        taskApplicationDescriptor.withDefaultSystem(kafkaSystemDescriptor);
+        taskApplicationDescriptor.withInputStream(kafkaInputDescriptor1);
+
+        taskApplicationDescriptor.withOutputStream(
+        kafkaSystemDescriptor.getOutputDescriptor("ad-stream", new JsonSerde<>()));
 
         taskApplicationDescriptor.withTaskFactory((StreamTaskFactory)() -> new AdMatchTask());
     }

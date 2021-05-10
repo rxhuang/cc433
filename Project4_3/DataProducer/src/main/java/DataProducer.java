@@ -42,6 +42,13 @@ public class DataProducer {
             || lineJson.getString("type").equals("RIDE_REQUEST")
             || lineJson.getString("type").equals("RIDE_COMPLETE")) {
                 this.producer.send(new ProducerRecord<String, String>("events", blockID, null, strCurrentLine));
+            } else if (lineJson.getString("type").equals("RIDER_STATUS")
+            || lineJson.getString("type").equals("RIDER_INTEREST")){
+                this.producer.send(new ProducerRecord<String, String>("events", 0, null, strCurrentLine));
+                this.producer.send(new ProducerRecord<String, String>("events", 1, null, strCurrentLine));
+                this.producer.send(new ProducerRecord<String, String>("events", 2, null, strCurrentLine));
+                this.producer.send(new ProducerRecord<String, String>("events", 3, null, strCurrentLine));
+                this.producer.send(new ProducerRecord<String, String>("events", 4, null, strCurrentLine));
             }
         }
 
