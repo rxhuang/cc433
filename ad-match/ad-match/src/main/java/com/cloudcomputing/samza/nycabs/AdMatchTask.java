@@ -3,6 +3,8 @@ package com.cloudcomputing.samza.nycabs;
 import com.google.common.io.Resources;
 import org.apache.samza.context.Context;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.task.InitableTask;
@@ -147,8 +149,11 @@ public class AdMatchTask implements StreamTask, InitableTask {
         into the same reducer.
         */
         String incomingStream = envelope.getSystemStreamPartition().getStream();
+        Map<String, Object> data = (Map<String, Object>) envelope.getMessage();
 
         if (incomingStream.equals(AdMatchConfig.EVENT_STREAM.getStream())) {
+            String type = (String)data.get("type");
+
             // Handle Event messages
             if (type.equals("RIDER_INTEREST")) {
                 int userId = (int)data.get("userId");
@@ -283,7 +288,7 @@ public class AdMatchTask implements StreamTask, InitableTask {
                 message.put("userId", clientId);
                 message.put("storeId", maxStoreId);
                 message.put("name", maxStoreName);
-                collector.send(new OutgoingMessageEnvelope(DriverMatchConfig.MATCH_STREAM, message));
+                collector.send(new OutgoingMessageEnvelope(AdMatchConfig.AD_STREAM, message));
             }
 
         } else {
