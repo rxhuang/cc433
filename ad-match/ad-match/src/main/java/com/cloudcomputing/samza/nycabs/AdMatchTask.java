@@ -86,8 +86,8 @@ public class AdMatchTask implements StreamTask, InitableTask {
     @SuppressWarnings("unchecked")
     public void init(Context context) throws Exception {
         // Initialize kv store
-        userInfo = (KeyValueStore<Integer, Map<String, Object>>) context.getTaskContext().getStore("user-info");
-        yelpInfo = (KeyValueStore<String, Map<String, Object>>) context.getTaskContext().getStore("yelp-info");
+        userInfo = (KeyValueStore<Integer, String>) context.getTaskContext().getStore("user-info");
+        yelpInfo = (KeyValueStore<String, String>) context.getTaskContext().getStore("yelp-info");
 
         //Initialize store tags set
         initSets();
